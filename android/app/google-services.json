@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "368245947589",
+    "project_id": "swichify-project",
+    "storage_bucket": "swichify-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368245947589:android:e550dc5b59b2f27ca344ac",
+        "android_client_info": {
+          "package_name": "com.kardusinfo.switchify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "368245947589-dr7pkgrqn5dfbf65qf642fn6g2qnu4qc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kardusinfo.switchify",
+            "certificate_hash": "177a099a9e1bc516d6038230fd1e81dc2f7bacdc"
+          }
+        },
+        {
+          "client_id": "368245947589-95oe5f4kir3uaukdsrna2s6a2c26iv3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-apc2aq5Ty1iJfvyLXaX2vN_zZ-zuhg8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "368245947589-95oe5f4kir3uaukdsrna2s6a2c26iv3f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
