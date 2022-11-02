@@ -4,3 +4,4 @@ import 'package:switchify/src/screens/screens.dart';
 
 part 'router.dart';
 part 'colors.dart';
+part 'constanta.dart';

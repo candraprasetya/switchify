@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:switchify/src/blocs/blocs.dart';
 import 'package:switchify/src/utilities/utilities.dart';
 
 class App extends StatelessWidget {
@@ -7,8 +8,15 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      routerConfig: router,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => RegisterBloc(),
+        )
+      ],
+      child: MaterialApp.router(
+        routerConfig: router,
+      ),
     );
   }
 }
