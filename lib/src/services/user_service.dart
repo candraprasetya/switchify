@@ -28,8 +28,32 @@ class UserService {
     }
   }
 
-  //TODO: Login With Email
+  Future<Either<String, UserModel>> loginWithEmail(
+      {String? email, String? password}) async {
+    try {
+      final userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email!, password: password!);
 
-  //TODO: Get User Data
+      return loadUserData(userCredential.user!.uid);
+    } on FirebaseAuthException catch (e) {
+      return left(e.toString().split(']').last);
+    }
+  }
 
+  Future<Either<String, UserModel>> loadUserData(String? uid) async {
+    try {
+      final userData = await usersCollection.doc(uid).get();
+      if (userData.data()!.isNotEmpty) {
+        return right(UserModel.fromMap(userData.data()!));
+      } else {
+        return left('User tidak ditemukan');
+      }
+    } on FirebaseAuthException catch (e) {
+      return left(e.toString().split(']').last);
+    }
+  }
+
+  Future<void> logOutUser() async {
+    await FirebaseAuth.instance.signOut();
+  }
 }

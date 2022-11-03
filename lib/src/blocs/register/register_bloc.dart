@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:switchify/src/models/models.dart';
 import 'package:switchify/src/services/services.dart';
+import 'package:switchify/src/utilities/utilities.dart';
 
 part 'register_event.dart';
 part 'register_state.dart';
@@ -15,7 +16,10 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       emit(
         result.fold(
           (l) => RegisterIsFailed(message: l),
-          (r) => RegisterIsSuccess(data: r),
+          (r) {
+            Commons().setUID(r.uid!);
+            return RegisterIsSuccess(data: r);
+          },
         ),
       );
     });

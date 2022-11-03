@@ -10,9 +10,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => RegisterBloc(),
-        )
+        BlocProvider(create: (context) => RegisterBloc()),
+        BlocProvider(create: (context) => LoginBloc()),
+        BlocProvider(create: (context) => UserBloc()),
       ],
       child: MaterialApp.router(
         routerConfig: router,

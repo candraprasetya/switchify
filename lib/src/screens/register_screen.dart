@@ -19,11 +19,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: BlocListener<RegisterBloc, RegisterState>(
         listener: (context, state) {
           if (state is RegisterIsFailed) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: state.message.text.make()));
+            Commons().showSnackBar(context, state.message);
           } else if (state is RegisterIsSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: "Selamat Datang ${state.data.username} ".text.make()));
+            context.go(routeName.home);
           }
         },
         child: VStack(
