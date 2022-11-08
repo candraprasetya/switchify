@@ -11,3 +11,4 @@ part 'splash_screen.dart';
 part 'register_screen.dart';
 part 'login_screen.dart';
 part 'home_screen.dart';
+part 'admin_screen.dart';

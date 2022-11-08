@@ -66,7 +66,11 @@ class _LoginScreenState extends State<LoginScreen> {
               color: colorName.accentBlue,
             );
           },
-        )
+        ),
+        16.heightBox,
+        'Register here'.text.makeCentered().onTap(() {
+          context.go(routeName.register);
+        })
       ],
     ).p16();
   }

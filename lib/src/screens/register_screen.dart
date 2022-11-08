@@ -73,7 +73,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               text: 'Register',
             );
           },
-        )
+        ),
+        16.heightBox,
+        'Login here'.text.makeCentered().onTap(() {
+          context.go(routeName.login);
+        })
       ],
     ).p(16);
   }
