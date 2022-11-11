@@ -2,6 +2,7 @@ part of 'utilities.dart';
 
 class Commons {
   final prefs = SharedPreferences.getInstance();
+  final picker = ImagePicker();
 
   void setUID(String uid) async {
     final storage = await prefs;
@@ -21,5 +22,14 @@ class Commons {
   void showSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: message.text.make()));
+  }
+
+  //fungsi untuk get Image from gallery
+  Future<File> getImage() async {
+    final pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 10,
+    );
+    return File(pickedFile!.path);
   }
 }

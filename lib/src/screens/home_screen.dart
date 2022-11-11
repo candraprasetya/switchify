@@ -42,10 +42,12 @@ class HomeScreen extends StatelessWidget {
           HStack([
             VxCircle(
               radius: 56,
-              backgroundImage: DecorationImage(
-                image: NetworkImage(data.photoProfile!),
-                fit: BoxFit.cover,
-              ),
+              backgroundImage: (data.photoProfile != null)
+                  ? DecorationImage(
+                      image: NetworkImage(data.photoProfile!),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
             ).onTap(() {
               context.go(routeName.adminPath);
             }),

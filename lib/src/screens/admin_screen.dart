@@ -19,13 +19,30 @@ class _AdminScreenState extends State<AdminScreen> {
         backgroundColor: colorName.secondary,
         elevation: 0.0,
       ),
-      body: VStack([
-        _buildProductForm(),
-        ButtonWidget(
-          onPressed: () {},
-          text: 'Unggah Produk',
-        ).px16()
-      ]),
+      body: BlocConsumer<AdminBloc, AdminState>(
+        listener: (context, state) {
+          if (state is AdminIsSuccess) {
+            Commons().showSnackBar(context, state.message);
+          } else if (state is AdminIsFailed) {
+            Commons().showSnackBar(context, state.message);
+          }
+        },
+        builder: (context, state) {
+          return VStack([
+            _buildProductForm(),
+            ButtonWidget(
+              onPressed: () {
+                BlocProvider.of<AdminBloc>(context).add(AddProduct(
+                  name: productNameController.text,
+                  price: double.parse(productPriceController.text),
+                ));
+              },
+              isLoading: (state is AdminIsLoading) ? true : false,
+              text: 'Unggah Produk',
+            ).px16()
+          ]);
+        },
+      ),
     );
   }
 
@@ -41,6 +58,44 @@ class _AdminScreenState extends State<AdminScreen> {
         controller: productPriceController,
         title: 'Harga Produk',
       ),
+      8.heightBox,
+      BlocBuilder<ProductPictureCubit, ProductPictureState>(
+        builder: (context, state) {
+          if (state is ProductPictureIsLoaded) {
+            return ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: ZStack(
+                [
+                  AspectRatio(
+                    aspectRatio: 16 / 9,
+                    child: Image.file(
+                      state.file,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      BlocProvider.of<ProductPictureCubit>(context).getImage();
+                    },
+                    icon: Icon(Icons.image),
+                  )
+                      .box
+                      .color(colorName.white.withOpacity(.8))
+                      .roundedFull
+                      .make(),
+                ],
+                alignment: Alignment.center,
+              ),
+            );
+          }
+          return IconButton(
+            onPressed: () {
+              BlocProvider.of<ProductPictureCubit>(context).getImage();
+            },
+            icon: Icon(Icons.image),
+          );
+        },
+      )
     ]).p16();
   }
 }
