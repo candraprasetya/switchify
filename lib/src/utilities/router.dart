@@ -40,6 +40,7 @@ final GoRouter router = GoRouter(initialLocation: routeName.splash, routes: [
       path: routeName.home,
       builder: (context, state) {
         BlocProvider.of<UserBloc>(context).add(LoadUserData());
+        BlocProvider.of<ListProductBloc>(context).add(FetchListProduct());
         return const HomeScreen();
       },
       routes: [

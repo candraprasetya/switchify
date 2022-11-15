@@ -14,10 +14,11 @@ class AdminService {
         String downloadUrl = await snapshot.ref.getDownloadURL();
         if (downloadUrl.isNotEmpty) {
           updateProduct(
-              data.id!,
-              data.copyWith(
-                picture: downloadUrl,
-              ));
+            data.id!,
+            data.copyWith(
+              picture: downloadUrl,
+            ),
+          );
         }
       }
       return right('Berhasil Menambahkan Produk');

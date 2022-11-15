@@ -9,3 +9,4 @@ import 'package:switchify/src/utilities/utilities.dart';
 
 part 'user_service.dart';
 part 'admin_service.dart';
+part 'product_service.dart';

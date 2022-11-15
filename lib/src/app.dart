@@ -14,8 +14,11 @@ class App extends StatelessWidget {
         BlocProvider(create: (context) => RegisterBloc()),
         BlocProvider(create: (context) => LoginBloc()),
         BlocProvider(create: (context) => UserBloc()),
-        BlocProvider(create: (context) => AdminBloc(ProductPictureCubit())),
         BlocProvider(create: (context) => ProductPictureCubit()),
+        BlocProvider(create: (context) => ListProductBloc()),
+        BlocProvider(
+            create: (context) =>
+                AdminBloc(BlocProvider.of<ProductPictureCubit>(context))),
       ],
       child: MaterialApp.router(
         routerConfig: router,

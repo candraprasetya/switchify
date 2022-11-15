@@ -11,37 +11,53 @@ class _AdminScreenState extends State<AdminScreen> {
   final TextEditingController productNameController = TextEditingController();
   final TextEditingController productPriceController = TextEditingController();
 
+  void reset() {
+    //kita hapus name controller
+    productNameController.clear();
+    //kita hapus price controller
+    productPriceController.clear();
+    //kita hapus state image picker
+    BlocProvider.of<ProductPictureCubit>(context).resetImage();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: 'Tambah Produk'.text.make(),
-        backgroundColor: colorName.secondary,
-        elevation: 0.0,
-      ),
-      body: BlocConsumer<AdminBloc, AdminState>(
-        listener: (context, state) {
-          if (state is AdminIsSuccess) {
-            Commons().showSnackBar(context, state.message);
-          } else if (state is AdminIsFailed) {
-            Commons().showSnackBar(context, state.message);
-          }
-        },
-        builder: (context, state) {
-          return VStack([
-            _buildProductForm(),
-            ButtonWidget(
-              onPressed: () {
-                BlocProvider.of<AdminBloc>(context).add(AddProduct(
-                  name: productNameController.text,
-                  price: double.parse(productPriceController.text),
-                ));
-              },
-              isLoading: (state is AdminIsLoading) ? true : false,
-              text: 'Unggah Produk',
-            ).px16()
-          ]);
-        },
+    return WillPopScope(
+      onWillPop: () async {
+        reset();
+        return Future.value(true);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: 'Tambah Produk'.text.make(),
+          backgroundColor: colorName.secondary,
+          elevation: 0.0,
+        ),
+        body: BlocConsumer<AdminBloc, AdminState>(
+          listener: (context, state) {
+            if (state is AdminIsSuccess) {
+              reset();
+              Commons().showSnackBar(context, state.message);
+            } else if (state is AdminIsFailed) {
+              Commons().showSnackBar(context, state.message);
+            }
+          },
+          builder: (context, state) {
+            return VStack([
+              _buildProductForm(),
+              ButtonWidget(
+                onPressed: () {
+                  BlocProvider.of<AdminBloc>(context).add(AddProduct(
+                    name: productNameController.text,
+                    price: double.parse(productPriceController.text),
+                  ));
+                },
+                isLoading: (state is AdminIsLoading) ? true : false,
+                text: 'Unggah Produk',
+              ).px16()
+            ]);
+          },
+        ),
       ),
     );
   }
