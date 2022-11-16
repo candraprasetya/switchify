@@ -110,7 +110,9 @@ class HomeScreen extends StatelessWidget {
                   data[index].name!.text.bodyText1(context).make(),
                   data[index].price!.text.bodyText1(context).make(),
                 ]),
-              );
+              ).onTap(() {
+                context.go(routeName.detailPath, extra: data[index].id);
+              });
             },
           );
         }

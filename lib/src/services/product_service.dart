@@ -17,6 +17,17 @@ class ProductService {
     }
   }
 
+  Future<Either<String, ProductModel>> fetchDetailProduct(String docId) async {
+    try {
+      final documentSnapshot = await productCollection.doc(docId).get();
+
+      final data = ProductModel.fromMap(documentSnapshot.data()!);
+      return right(data);
+    } catch (e) {
+      return left(e.toString());
+    }
+  }
+
   Future<Either<String, List<ProductModel>>> fetchListProductCaraKedua() async {
     try {
       final querySnapshot = await productCollection.get();

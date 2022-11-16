@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:switchify/src/blocs/blocs.dart';
+import 'package:switchify/src/blocs/detail_product/detail_product_bloc.dart';
 import 'package:switchify/src/cubits/cubits.dart';
 import 'package:switchify/src/utilities/utilities.dart';
 
@@ -16,6 +17,7 @@ class App extends StatelessWidget {
         BlocProvider(create: (context) => UserBloc()),
         BlocProvider(create: (context) => ProductPictureCubit()),
         BlocProvider(create: (context) => ListProductBloc()),
+        BlocProvider(create: (context) => DetailProductBloc()),
         BlocProvider(
             create: (context) =>
                 AdminBloc(BlocProvider.of<ProductPictureCubit>(context))),

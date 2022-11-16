@@ -7,6 +7,8 @@ mixin routeName {
   static const home = '/home';
   static const admin = 'admin';
   static const adminPath = '/home/admin';
+  static const detail = 'detail';
+  static const detailPath = '/home/detail';
 }
 
 final GoRouter router = GoRouter(initialLocation: routeName.splash, routes: [
@@ -48,6 +50,14 @@ final GoRouter router = GoRouter(initialLocation: routeName.splash, routes: [
           path: routeName.admin,
           builder: (context, state) {
             return const AdminScreen();
+          },
+        ),
+        GoRoute(
+          path: routeName.detail,
+          builder: (context, state) {
+            BlocProvider.of<DetailProductBloc>(context)
+                .add(FetchDetailProduct(state.extra as String));
+            return const DetailScreen();
           },
         ),
       ]),
