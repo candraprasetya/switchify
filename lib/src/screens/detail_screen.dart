@@ -7,6 +7,10 @@ class DetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
+      bottomNavigationBar: ButtonWidget(
+        text: 'Add To Cart',
+        onPressed: () {},
+      ),
       body: BlocBuilder<DetailProductBloc, DetailProductState>(
         builder: (context, state) {
           if (state is DetailProductIsSuccess) {
