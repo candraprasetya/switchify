@@ -9,8 +9,8 @@ class ProductPictureInitial extends ProductPictureState {}
 class ProductPictureIsFailed extends ProductPictureState {}
 
 class ProductPictureIsLoaded extends ProductPictureState {
-  final File file;
+  final List<File> files;
   ProductPictureIsLoaded({
-    required this.file,
+    required this.files,
   });
 }

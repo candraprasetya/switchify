@@ -86,6 +86,7 @@ class _AdminScreenState extends State<AdminScreen> {
       8.heightBox,
       TextFieldWidget(
         controller: productDescController,
+        maxLines: 4,
         title: 'Deskripsi Produk',
       ),
       8.heightBox,
@@ -96,41 +97,62 @@ class _AdminScreenState extends State<AdminScreen> {
       8.heightBox,
       BlocBuilder<ProductPictureCubit, ProductPictureState>(
         builder: (context, state) {
-          if (state is ProductPictureIsLoaded) {
-            return ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: ZStack(
-                [
-                  AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: Image.file(
-                      state.file,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      BlocProvider.of<ProductPictureCubit>(context).getImage();
+          if (state is ProductPictureIsLoaded && state.files.isNotEmpty) {
+            return AspectRatio(
+                aspectRatio: 16 / 7,
+                child: ListView.separated(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return (index == state.files.length)
+                          ? _buildAddImageButton(context)
+                          : _buildImage(
+                              context: context,
+                              image: state.files[index],
+                              index: index);
                     },
-                    icon: Icon(Icons.image),
-                  )
-                      .box
-                      .color(colorName.white.withOpacity(.8))
-                      .roundedFull
-                      .make(),
-                ],
-                alignment: Alignment.center,
-              ),
-            );
+                    separatorBuilder: (context, index) => 16.widthBox,
+                    itemCount: state.files.length + 1));
           }
-          return IconButton(
-            onPressed: () {
-              BlocProvider.of<ProductPictureCubit>(context).getImage();
-            },
-            icon: Icon(Icons.image),
-          );
+          return _buildAddImageButton(context);
         },
       )
     ]).p16();
+  }
+
+  Widget _buildAddImageButton(BuildContext context) {
+    return IconButton(
+      onPressed: () {
+        BlocProvider.of<ProductPictureCubit>(context).getImage();
+      },
+      icon: const Icon(Icons.add_a_photo_rounded),
+    ).box.color(colorName.white.withOpacity(.8)).roundedFull.make();
+  }
+
+  Widget _buildImage(
+      {required BuildContext context,
+      required File image,
+      required int index}) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: ZStack(
+        [
+          AspectRatio(
+            aspectRatio: 16 / 10,
+            child: Image.file(
+              image,
+              fit: BoxFit.cover,
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              BlocProvider.of<ProductPictureCubit>(context).deleteImage(index);
+            },
+            icon: const Icon(Icons.delete_forever),
+          ).box.color(colorName.white.withOpacity(.8)).roundedFull.make(),
+        ],
+        alignment: Alignment.center,
+      ),
+    );
   }
 }

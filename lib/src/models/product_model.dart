@@ -7,15 +7,16 @@ class ProductModel {
   final DateTime? dateTime;
   final String? name;
   final double? price;
-  final String? picture;
+  final List<String>? pictures;
   final String? desc;
   final List<String>? variant;
+
   ProductModel({
     this.id,
     this.dateTime,
     this.name,
     this.price,
-    this.picture,
+    this.pictures,
     this.desc,
     this.variant,
   });
@@ -25,7 +26,7 @@ class ProductModel {
     DateTime? dateTime,
     String? name,
     double? price,
-    String? picture,
+    List<String>? pictures,
     String? desc,
     List<String>? variant,
   }) {
@@ -34,7 +35,7 @@ class ProductModel {
       dateTime: dateTime ?? this.dateTime,
       name: name ?? this.name,
       price: price ?? this.price,
-      picture: picture ?? this.picture,
+      pictures: pictures ?? this.pictures,
       desc: desc ?? this.desc,
       variant: variant ?? this.variant,
     );
@@ -46,7 +47,7 @@ class ProductModel {
       'dateTime': dateTime?.millisecondsSinceEpoch,
       'name': name,
       'price': price,
-      'picture': picture,
+      'pictures': pictures,
       'desc': desc,
       'variant': variant,
     };
@@ -60,7 +61,7 @@ class ProductModel {
           : null,
       name: map['name'] != null ? map['name'] as String : null,
       price: map['price'] != null ? map['price'] as double : null,
-      picture: map['picture'] != null ? map['picture'] as String : null,
+      pictures: map['pictures'] != null ? List.from(map['pictures']) : [],
       desc: map['desc'] != null ? map['desc'] as String : null,
       variant: map['variant'] != null ? List.from(map['variant']) : [],
     );

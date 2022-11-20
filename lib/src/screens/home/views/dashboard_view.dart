@@ -1,20 +1,13 @@
-part of 'screens.dart';
+part of '../../screens.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class DashboardView extends StatelessWidget {
+  const DashboardView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: BlocConsumer<UserBloc, UserState>(
-          listener: (context, state) {
-            if (state is UserIsFailed) {
-              Commons().showSnackBar(context, state.message);
-            } else if (state is UserIsLogOut) {
-              context.go(routeName.login);
-            }
-          },
+        child: BlocBuilder<UserBloc, UserState>(
           builder: (context, state) {
             if (state is UserIsLoading) {
               return const CircularProgressIndicator().centered();
@@ -59,15 +52,36 @@ class HomeScreen extends StatelessWidget {
             ]).make(),
           ]).expand(),
 
-          //ICON Logout
-          IconButton(
-            onPressed: () {
-              BlocProvider.of<UserBloc>(context).add(LogOutUser());
+          //ICON Cart
+          BlocBuilder<CartCountCubit, CartCountState>(
+            builder: (context, state) {
+              return ZStack(
+                [
+                  IconButton(
+                    onPressed: () {
+                      context.go(routeName.cartPath);
+                    },
+                    icon: const Icon(
+                      Icons.shopping_cart_outlined,
+                      color: colorName.black,
+                    ),
+                  ),
+                  (state as CartCountIsSuccess).value != 0
+                      ? VxBox(
+                              child: state.value.text
+                                  .size(8)
+                                  .white
+                                  .makeCentered()
+                                  .p4())
+                          .roundedFull
+                          .color(colorName.accentRed)
+                          .make()
+                          .positioned(right: 8, top: 2)
+                      : 0.heightBox
+                ],
+                alignment: Alignment.topRight,
+              );
             },
-            icon: const Icon(
-              Icons.logout_rounded,
-              color: colorName.accentRed,
-            ),
           )
         ],
         // alignment: MainAxisAlignment.spaceBetween,
@@ -86,7 +100,7 @@ class HomeScreen extends StatelessWidget {
       builder: (context, state) {
         if (state is ListProductIsLoading) {
           //Loading Widget
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         }
         if (state is ListProductIsSuccess) {
           //List Product Widget
@@ -95,29 +109,42 @@ class HomeScreen extends StatelessWidget {
           return GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
+              childAspectRatio: 3.5 / 4,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
             ),
             itemCount: data.length,
             itemBuilder: (context, index) {
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: VStack([
-                  Image.network(
-                    data[index].picture!,
-                    fit: BoxFit.cover,
-                  ),
-                  data[index].name!.text.bodyText1(context).make(),
-                  data[index].price!.text.bodyText1(context).make(),
-                ]),
-              ).onTap(() {
-                context.go(routeName.detailPath, extra: data[index].id);
-              });
+              return _buildProductWidget(context, data[index]);
             },
           );
         }
         return Container();
       },
     );
+  }
+
+  Widget _buildProductWidget(BuildContext context, ProductModel data) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: VStack(
+        [
+          AspectRatio(
+            aspectRatio: 16 / 10,
+            child: Image.network(
+              data.pictures![0],
+              fit: BoxFit.cover,
+            ),
+          ),
+          VStack([
+            data.name!.text.size(16).bold.make(),
+            4.heightBox,
+            Commons().setPriceToIDR(data.price!).text.size(12).make(),
+          ]).p8()
+        ],
+      ).box.white.make(),
+    ).onTap(() {
+      context.go(routeName.detailPath, extra: data.id);
+    });
   }
 }

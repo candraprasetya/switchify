@@ -71,7 +71,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               },
               isLoading: (state is RegisterIsLoading) ? true : false,
               text: 'Register',
-            );
+            ).wFull(context);
           },
         ),
         16.heightBox,

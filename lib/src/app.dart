@@ -18,6 +18,17 @@ class App extends StatelessWidget {
         BlocProvider(create: (context) => ProductPictureCubit()),
         BlocProvider(create: (context) => ListProductBloc()),
         BlocProvider(create: (context) => DetailProductBloc()),
+        BlocProvider(create: (context) => ListWishlistBloc()),
+        BlocProvider(create: (context) => CheckSavedCubit()),
+        BlocProvider(create: (context) => CheckVariantCubit()),
+        BlocProvider(create: (context) => CartCountCubit()),
+        BlocProvider(create: (context) => BottomNavBarCubit()),
+        BlocProvider(create: (context) => ListCartBloc()),
+        BlocProvider(create: (context) => CheckboxCartCubit()),
+        BlocProvider(create: (context) => AddToCartBloc()),
+        BlocProvider(
+            create: (context) =>
+                WishlistCubit(BlocProvider.of<CheckSavedCubit>(context))),
         BlocProvider(
             create: (context) =>
                 AdminBloc(BlocProvider.of<ProductPictureCubit>(context))),

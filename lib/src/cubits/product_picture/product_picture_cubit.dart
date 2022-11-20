@@ -10,9 +10,14 @@ class ProductPictureCubit extends Cubit<ProductPictureState> {
   ProductPictureCubit() : super(ProductPictureInitial());
 
   void getImage() async {
+    final listData = (state is ProductPictureIsLoaded)
+        ? (state as ProductPictureIsLoaded).files
+        : <File>[];
+
     final file = await Commons().getImage();
     if (file.path.isNotEmpty) {
-      emit(ProductPictureIsLoaded(file: file));
+      listData.add(file);
+      emit(ProductPictureIsLoaded(files: listData));
     } else {
       emit(ProductPictureIsFailed());
     }
@@ -20,5 +25,11 @@ class ProductPictureCubit extends Cubit<ProductPictureState> {
 
   void resetImage() {
     emit(ProductPictureInitial());
+  }
+
+  void deleteImage(int id) {
+    final listData = (state as ProductPictureIsLoaded).files;
+    listData.removeAt(id);
+    emit(ProductPictureIsLoaded(files: listData));
   }
 }

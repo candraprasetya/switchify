@@ -53,6 +53,24 @@ class UserService {
     }
   }
 
+  Future<Either<String, UserModel>> changeProfile(UserModel userData) async {
+    try {
+      String uid = await Commons().getUID();
+      final newPhoto = await Commons().getImage();
+      String downloadUrl =
+          await Commons().uploadFile(uid, newPhoto, fileName: uid);
+
+      if (downloadUrl.isNotEmpty) {
+        usersCollection
+            .doc(uid)
+            .set(userData.copyWith(photoProfile: downloadUrl).toMap());
+      }
+      return loadUserData(uid);
+    } on FirebaseAuthException catch (e) {
+      return left(e.toString().split(']').last);
+    }
+  }
+
   Future<void> logOutUser() async {
     await FirebaseAuth.instance.signOut();
   }

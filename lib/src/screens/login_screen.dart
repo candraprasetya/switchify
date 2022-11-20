@@ -64,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen> {
               isLoading: (state is LoginIsLoading) ? true : false,
               text: 'Login',
               color: colorName.accentBlue,
-            );
+            ).wFull(context);
           },
         ),
         16.heightBox,

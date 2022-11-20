@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'models.dart';
 
 class UserModel {
@@ -44,4 +45,22 @@ class UserModel {
 
   factory UserModel.fromJson(String source) =>
       UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  UserModel copyWith({
+    String? username,
+    String? email,
+    String? uid,
+    String? photoProfile,
+    String? walletId,
+    bool? admin,
+  }) {
+    return UserModel(
+      username: username ?? this.username,
+      email: email ?? this.email,
+      uid: uid ?? this.uid,
+      photoProfile: photoProfile ?? this.photoProfile,
+      walletId: walletId ?? this.walletId,
+      admin: admin ?? this.admin,
+    );
+  }
 }

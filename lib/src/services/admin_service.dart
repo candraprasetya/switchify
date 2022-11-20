@@ -5,18 +5,16 @@ class AdminService {
       FirebaseFirestore.instance.collection(productCollectionName);
 
   Future<Either<String, String>> addNewProduct(ProductModel data,
-      {File? file}) async {
+      {List<File>? files}) async {
     try {
       productCollection.doc(data.id).set(data.toMap());
-      if (file != null) {
-        Reference ref = FirebaseStorage.instance.ref().child(data.id!);
-        TaskSnapshot snapshot = await ref.putFile(file);
-        String downloadUrl = await snapshot.ref.getDownloadURL();
-        if (downloadUrl.isNotEmpty) {
+      if (files!.isNotEmpty) {
+        final downloadUrls = await Commons().uploadFiles(data.id!, files);
+        if (downloadUrls.isNotEmpty) {
           updateProduct(
             data.id!,
             data.copyWith(
-              picture: downloadUrl,
+              pictures: downloadUrls,
             ),
           );
         }

@@ -22,8 +22,8 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       );
 
       final result = await AdminService().addNewProduct(data,
-          file: (productPictureCubit.state is ProductPictureIsLoaded)
-              ? (productPictureCubit.state as ProductPictureIsLoaded).file
+          files: (productPictureCubit.state is ProductPictureIsLoaded)
+              ? (productPictureCubit.state as ProductPictureIsLoaded).files
               : null);
 
       result.fold((l) => emit(AdminIsFailed(message: l)),
