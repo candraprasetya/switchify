@@ -29,8 +29,8 @@ class ButtonWidget extends StatelessWidget {
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation(color),
               ),
-            ).centered().p(14)
+            ).p(14)
           : text.text.buttonText(context).color(colorName.white).make().p(14),
-    ).wFull(context);
+    );
   }
 }

@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:switchify/src/models/models.dart';
 import 'package:switchify/src/services/services.dart';
@@ -10,14 +9,31 @@ part 'user_state.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(UserInitial()) {
-    on<FetchUserData>((event, emit) async {
+    on<LoadUserData>((event, emit) async {
       emit(UserIsLoading());
-      final result = await UserService().loadUserData(await Commons().getUid());
-      result.fold((l) => emit(UserIsFailed(l)), (r) => emit(UserIsSuccess(r)));
+      String uid = await Commons().getUID();
+      final result = await UserService().loadUserData(uid);
+      emit(
+        result.fold(
+          (l) => UserIsFailed(message: l),
+          (r) => UserIsSuccess(data: r),
+        ),
+      );
     });
-    on<UserLogOut>((event, emit) async {
-      await FirebaseAuth.instance.signOut();
-      emit(UserIsLoggedOut());
+    on<LogOutUser>((event, emit) async {
+      UserService().logOutUser();
+      await Commons().removeUID();
+      emit(UserIsLogOut());
+    });
+    on<ChangePhoto>((event, emit) async {
+      final result =
+          await UserService().changeProfile((state as UserIsSuccess).data);
+      emit(
+        result.fold(
+          (l) => UserIsFailed(message: l),
+          (r) => UserIsSuccess(data: r),
+        ),
+      );
     });
   }
 }

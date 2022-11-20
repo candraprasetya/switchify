@@ -74,3 +74,8 @@ Use this space to list resources you find helpful and would like to give credit 
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+Kita buat screen untuk detail dan router 
+Buat Service
+Buat BLOC dna daftarkan di app

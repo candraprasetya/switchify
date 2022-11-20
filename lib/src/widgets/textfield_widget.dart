@@ -1,16 +1,20 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'widgets.dart';
 
 class TextFieldWidget extends StatefulWidget {
-  final TextEditingController? controller;
-  final String? title;
+  final TextEditingController controller;
+  final String title;
   final bool? isPassword;
   final bool? isEnabled;
+  final int? maxLines;
+
   const TextFieldWidget(
       {super.key,
-      this.controller,
-      this.title,
+      required this.controller,
+      required this.title,
       this.isPassword = false,
-      this.isEnabled = true});
+      this.isEnabled = true,
+      this.maxLines = 1});
 
   @override
   State<TextFieldWidget> createState() => _TextFieldWidgetState();
@@ -24,6 +28,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
     return TextField(
       controller: widget.controller,
       enabled: widget.isEnabled!,
+      maxLines: widget.maxLines,
       textAlignVertical: TextAlignVertical.center,
       obscureText: (widget.isPassword!) ? isObscure : false,
       decoration: InputDecoration(

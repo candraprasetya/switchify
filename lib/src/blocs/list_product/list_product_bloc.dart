@@ -8,11 +8,12 @@ part 'list_product_state.dart';
 
 class ListProductBloc extends Bloc<ListProductEvent, ListProductState> {
   ListProductBloc() : super(ListProductInitial()) {
-    on<FetchProductList>((event, emit) async {
+    on<FetchListProduct>((event, emit) async {
       emit(ListProductIsLoading());
-      final result = await ProductService().fetchProductList();
-      result.fold((l) => emit(ListProductIsFailed(l)),
-          (r) => emit(ListProductIsSuccess(r)));
+      final result = await ProductService().fetchListProduct();
+
+      emit(result.fold((l) => ListProductIsFailed(message: l),
+          (r) => ListProductIsSuccess(products: r)));
     });
   }
 }

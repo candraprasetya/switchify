@@ -1,48 +1,56 @@
 part of 'utilities.dart';
 
-enum SnackbarType { error, success, info }
-
 class Commons {
+  final prefs = SharedPreferences.getInstance();
   final picker = ImagePicker();
-  final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
-  void setUid(String uid) async {
-    final SharedPreferences storage = await prefs;
 
-    await storage.setString(myUid, uid);
+  void setUID(String uid) async {
+    final storage = await prefs;
+    await storage.setString(myUID, uid);
   }
 
-  Future<String?> getUid() async {
-    final SharedPreferences storage = await prefs;
-    String uid = storage.getString(myUid)!;
-    print("MY UID $uid");
-    return uid;
+  Future<String> getUID() async {
+    final storage = await prefs;
+    return storage.getString(myUID)!;
   }
 
-  void showSnackBar(BuildContext context, String message, SnackbarType type) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        backgroundColor: (type == SnackbarType.info)
-            ? colorName.accentBlue
-            : (type == SnackbarType.error)
-                ? colorName.accentRed
-                : colorName.accentGreen,
-        content: message.text.make()));
+  Future<bool> removeUID() async {
+    final storage = await prefs;
+    return storage.remove(myUID);
   }
 
-  Future<File> getImage({bool isGallery = true}) async {
+  String setPriceToIDR(double price) {
+    return NumberFormat.currency(locale: 'id_ID', decimalDigits: 0)
+        .format(price)
+        .toString();
+  }
+
+  void showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: message.text.make()));
+  }
+
+  Future<String> uploadFile(String id, File file, {String? fileName}) async {
+    String imageName = fileName ??
+        file.path.substring(
+            file.path.lastIndexOf("/") + 1, file.path.lastIndexOf("."));
+    Reference ref = FirebaseStorage.instance.ref('$id/$imageName');
+    TaskSnapshot snapshot = await ref.putFile(file);
+    return await snapshot.ref.getDownloadURL();
+  }
+
+  Future<List<String>> uploadFiles(String id, List<File> files) async {
+    var imageUrls =
+        await Future.wait(files.map((file) => uploadFile(id, file)));
+    return imageUrls;
+  }
+
+  //fungsi untuk get Image from gallery
+  Future<File> getImage() async {
     final pickedFile = await picker.pickImage(
-      source: isGallery ? ImageSource.gallery : ImageSource.camera,
+      source: ImageSource.gallery,
       imageQuality: 10,
     );
-    final File file = File(pickedFile!.path);
-    return file;
-  }
-
-  String convertToIdr(dynamic number, int decimalDigit) {
-    NumberFormat currencyFormatter = NumberFormat.currency(
-      locale: 'id',
-      symbol: 'Rp',
-      decimalDigits: decimalDigit,
-    );
-    return currencyFormatter.format(number);
+    return File(pickedFile!.path);
   }
 }

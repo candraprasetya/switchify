@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'list_product_bloc.dart';
 
 @immutable
@@ -9,12 +10,14 @@ class ListProductIsLoading extends ListProductState {}
 
 class ListProductIsFailed extends ListProductState {
   final String message;
-
-  ListProductIsFailed(this.message);
+  ListProductIsFailed({
+    required this.message,
+  });
 }
 
 class ListProductIsSuccess extends ListProductState {
   final List<ProductModel> products;
-
-  ListProductIsSuccess(this.products);
+  ListProductIsSuccess({
+    required this.products,
+  });
 }

@@ -1,70 +1,77 @@
 part of 'services.dart';
 
 class UserService {
-  final userCollection =
-      FirebaseFirestore.instance.collection(userCollectionName);
+  //Init Collection
+  final usersCollection =
+      FirebaseFirestore.instance.collection(usersCollectionName);
 
   Future<Either<String, UserModel>> registerWithEmail(
-      {String? email, String? pass, String? name}) async {
-    // Once signed in, return the UserCredential
+      {String? email, String? password, String? name}) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email!, password: pass!);
-      UserModel userModel = UserModel(
+      final userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email!, password: password!);
+
+      //Kumpulkan Data
+      final userData = UserModel(
           admin: false,
-          email: email,
+          email: userCredential.user!.email,
           photoProfile: '',
           uid: userCredential.user!.uid,
-          username: name,
-          walletId: '');
-      userCollection.doc(userCredential.user!.uid).set(userModel.toJson());
+          username: name);
 
-      return loadUserData(userCredential.user!.uid);
+      //Uplload Data ke firebase firestore
+      usersCollection.doc(userCredential.user!.uid).set(userData.toMap());
+
+      return right(userData);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        return left('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        return left('The account already exists for that email.');
-      }
       return left(e.toString().split(']').last);
     }
   }
 
   Future<Either<String, UserModel>> loginWithEmail(
-      {String? email, String? pass}) async {
-    // Once signed in, return the UserCredential
+      {String? email, String? password}) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email!, password: pass!);
+      final userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email!, password: password!);
+
       return loadUserData(userCredential.user!.uid);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        return left('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        return left('The account already exists for that email.');
-      }
       return left(e.toString().split(']').last);
     }
   }
 
   Future<Either<String, UserModel>> loadUserData(String? uid) async {
-    // Once signed in, return the UserCredential
     try {
-      final userData = await userCollection.doc(uid).get();
+      final userData = await usersCollection.doc(uid).get();
       if (userData.data()!.isNotEmpty) {
-        log(UserModel.fromJson(userData.data()!).username!, name: 'TAHU BULAT');
-
-        return right(UserModel.fromJson(userData.data()!));
+        return right(UserModel.fromMap(userData.data()!));
       } else {
-        return left('Data Not Found');
+        return left('User tidak ditemukan');
       }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        return left('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        return left('The account already exists for that email.');
-      }
       return left(e.toString().split(']').last);
     }
+  }
+
+  Future<Either<String, UserModel>> changeProfile(UserModel userData) async {
+    try {
+      String uid = await Commons().getUID();
+      final newPhoto = await Commons().getImage();
+      String downloadUrl =
+          await Commons().uploadFile(uid, newPhoto, fileName: uid);
+
+      if (downloadUrl.isNotEmpty) {
+        usersCollection
+            .doc(uid)
+            .set(userData.copyWith(photoProfile: downloadUrl).toMap());
+      }
+      return loadUserData(uid);
+    } on FirebaseAuthException catch (e) {
+      return left(e.toString().split(']').last);
+    }
+  }
+
+  Future<void> logOutUser() async {
+    await FirebaseAuth.instance.signOut();
   }
 }

@@ -1,5 +1,7 @@
 part of 'utilities.dart';
 
-const userCollectionName = 'users';
+const usersCollectionName = 'users';
 const productCollectionName = 'products';
-const myUid = 'myUid';
+const cartCollectionName = 'cart';
+const wishListCollectionName = 'wishlist';
+const myUID = 'myUID';

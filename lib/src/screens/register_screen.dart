@@ -11,83 +11,74 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-      child: BlocListener<RegisterBloc, RegisterState>(
+      body: SafeArea(
+          child: BlocListener<RegisterBloc, RegisterState>(
         listener: (context, state) {
           if (state is RegisterIsFailed) {
-            Commons().showSnackBar(context, state.message, SnackbarType.error);
+            Commons().showSnackBar(context, state.message);
           } else if (state is RegisterIsSuccess) {
-            BlocProvider.of<ListProductBloc>(context).add(FetchProductList());
             context.go(routeName.home);
           }
         },
         child: VStack(
           [
-            'Daftar'.text.bold.headline5(context).make().px16(),
-            _buildRegistrationForm().py24(),
-            _buildButton()
+            VxBox()
+                .size(context.screenWidth, context.percentHeight * 20)
+                .color(colorName.primary)
+                .bottomRounded(value: 20)
+                .make(),
+            'Register'.text.headline5(context).make().p16(),
+            _buildRegistrationForm(),
           ],
         ),
-      ).scrollVertical().centered(),
-    ));
+      )),
+    );
   }
 
   Widget _buildRegistrationForm() {
-    return BlocBuilder<RegisterBloc, RegisterState>(
-      builder: (context, state) {
-        bool enableTextField = (state is RegisterIsLoading) ? false : true;
-        return VStack([
-          TextFieldWidget(
-            isEnabled: enableTextField,
-            controller: usernameController,
-            title: "Username",
-          ),
-          8.heightBox,
-          TextFieldWidget(
-            isEnabled: enableTextField,
-            title: 'Email',
-            controller: emailController,
-          ),
-          8.heightBox,
-          TextFieldWidget(
-            isEnabled: enableTextField,
-            title: 'Password',
-            controller: passController,
-            isPassword: true,
-          )
-        ]);
-      },
-    ).pSymmetric(h: 16);
-  }
-
-  Widget _buildButton() {
-    return VStack([
-      BlocBuilder<RegisterBloc, RegisterState>(
-        builder: (context, state) {
-          return ButtonWidget(
-            isLoading: (state is RegisterIsLoading) ? true : false,
-            onPressed: () {
-              BlocProvider.of<RegisterBloc>(context).add(Register(
-                  usernameController.text,
-                  emailController.text,
-                  passController.text));
-            },
-            text: 'Daftar',
-          );
-        },
-      ),
-      TextButton(
-        onPressed: () {
+    return VStack(
+      [
+        TextFieldWidget(
+          controller: usernameController,
+          title: 'Name',
+        ),
+        8.heightBox,
+        TextFieldWidget(
+          controller: emailController,
+          title: 'Email',
+        ),
+        8.heightBox,
+        TextFieldWidget(
+          controller: passController,
+          title: 'Password',
+          isPassword: true,
+        ),
+        16.heightBox,
+        BlocBuilder<RegisterBloc, RegisterState>(
+          builder: (context, state) {
+            return ButtonWidget(
+              onPressed: () {
+                BlocProvider.of<RegisterBloc>(context).add(
+                  RegisterUser(
+                      username: usernameController.text,
+                      email: emailController.text,
+                      password: passController.text),
+                );
+              },
+              isLoading: (state is RegisterIsLoading) ? true : false,
+              text: 'Register',
+            ).wFull(context);
+          },
+        ),
+        16.heightBox,
+        'Login here'.text.makeCentered().onTap(() {
           context.go(routeName.login);
-        },
-        child: 'Sudah punya akun? Masuk disini'
-            .text
-            .color(colorName.accentBlue)
-            .make(),
-      ).centered()
-    ]).pSymmetric(h: 16);
+        })
+      ],
+    ).p(16);
   }
 }

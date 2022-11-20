@@ -1,11 +1,5 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'models.dart';
-// To parse this JSON data, do
-//
-//     final userModel = userModelFromJson(jsonString);
-
-UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
-
-String userModelToJson(UserModel data) => json.encode(data.toJson());
 
 class UserModel {
   final String? username;
@@ -15,29 +9,58 @@ class UserModel {
   final String? walletId;
   final bool? admin;
 
-  UserModel(
-      {this.username,
-      this.email,
-      this.uid,
-      this.photoProfile,
-      this.walletId,
-      this.admin});
+  UserModel({
+    this.username,
+    this.email,
+    this.uid,
+    this.photoProfile,
+    this.walletId,
+    this.admin,
+  });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        username: json["username"],
-        email: json["email"],
-        uid: json["uid"],
-        photoProfile: json["photo_profile"] ?? '',
-        walletId: json["wallet_id"],
-        admin: json["admin"],
-      );
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'username': username,
+      'email': email,
+      'uid': uid,
+      'photoProfile': photoProfile,
+      'walletId': walletId,
+      'admin': admin,
+    };
+  }
 
-  Map<String, dynamic> toJson() => {
-        "username": username,
-        "email": email,
-        "uid": uid,
-        "photo_profile": photoProfile,
-        "wallet_id": walletId,
-        "admin": admin,
-      };
+  factory UserModel.fromMap(Map<String, dynamic> map) {
+    return UserModel(
+      username: map['username'] != null ? map['username'] as String : null,
+      email: map['email'] != null ? map['email'] as String : null,
+      uid: map['uid'] != null ? map['uid'] as String : null,
+      photoProfile:
+          map['photoProfile'] != null ? map['photoProfile'] as String : null,
+      walletId: map['walletId'] != null ? map['walletId'] as String : null,
+      admin: map['admin'] != null ? map['admin'] as bool : null,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  UserModel copyWith({
+    String? username,
+    String? email,
+    String? uid,
+    String? photoProfile,
+    String? walletId,
+    bool? admin,
+  }) {
+    return UserModel(
+      username: username ?? this.username,
+      email: email ?? this.email,
+      uid: uid ?? this.uid,
+      photoProfile: photoProfile ?? this.photoProfile,
+      walletId: walletId ?? this.walletId,
+      admin: admin ?? this.admin,
+    );
+  }
 }
