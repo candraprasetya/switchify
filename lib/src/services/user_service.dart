@@ -5,6 +5,35 @@ class UserService {
   final usersCollection =
       FirebaseFirestore.instance.collection(usersCollectionName);
 
+  Future<Either<String, UserModel>> loginWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleAccount = await GoogleSignIn().signIn();
+      GoogleSignInAuthentication? googleAuth =
+          await googleAccount!.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken, idToken: googleAuth.idToken);
+      final result =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      if (result.user != null) {
+        //Kumpulkan data
+        final userData = UserModel(
+            admin: false,
+            email: result.user!.email,
+            photoProfile: '',
+            uid: result.user!.uid,
+            username: result.user!.email!.split('@')[0]);
+        //Kirim data ke collection
+        usersCollection.doc(result.user!.uid).set(userData.toMap());
+        //Return
+        return right(userData);
+      }
+      return left('Sign In Gagal');
+    } on FirebaseAuthException catch (e) {
+      return left(e.toString().split(']').last);
+    }
+  }
+
   Future<Either<String, UserModel>> registerWithEmail(
       {String? email, String? password, String? name}) async {
     try {
